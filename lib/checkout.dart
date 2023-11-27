@@ -368,8 +368,7 @@ class _CheckoutState extends State<Checkout> {
                       style: ElevatedButton.styleFrom(
                         primary: Colors.black,
                       ),
-                      child: Text(
-                        'Place Order',
+                      child: Te
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width > 600 ? 14.0 : 12.0,
                           color: Colors.white,
