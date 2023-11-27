@@ -16,32 +16,70 @@ class _CheckoutState extends State<Checkout> {
   double discountedPrice = 0.0;
   bool promoCodeApplied = false;
 
+
+  String name = '';
+  String email = '';
+  String address = '';
+  String city = '';
+  String country = '';
+  String telephone = '';
+
   void applyPromoCode() {
     setState(() {
       promoCodeApplied = true;
       discountedPrice = widget.finalPrice * (1 - discount);
     });
   }
-  void placeOrder(BuildContext context) {
-    double orderPrice = promoCodeApplied ? discountedPrice : widget.finalPrice;
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Order Placed Successfully"),
-          content: Text("The order with price : \$${orderPrice.toStringAsFixed(2)} will be sent soon to the provided address."),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
+  void placeOrder(BuildContext context) {
+    if (validateInputs()) {
+      double orderPrice = promoCodeApplied ? discountedPrice : widget.finalPrice;
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Order Placed Successfully"),
+            content: Text("The order with price : \$${orderPrice.toStringAsFixed(2)} will be sent soon to the provided address."),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Please fill in all required fields."),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  bool validateInputs() {
+    return name.isNotEmpty &&
+        email.isNotEmpty &&
+        address.isNotEmpty &&
+        city.isNotEmpty &&
+        country.isNotEmpty &&
+        telephone.isNotEmpty;
   }
 
   @override
@@ -54,13 +92,15 @@ class _CheckoutState extends State<Checkout> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: 110.0, top: 12.0),
-              child: Text(
-                'Thanks for Shopping!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+            Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 12.0),
+                child: Text(
+                  'Thanks for Shopping!',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width > 600 ? 20 : 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -69,8 +109,8 @@ class _CheckoutState extends State<Checkout> {
               child: ClipOval(
                 child: Image.asset(
                   "assets/bag.jpg",
-                  width: 120.0,
-                  height: 120.0,
+                  width: MediaQuery.of(context).size.width > 600 ? 120.0 : 80.0,
+                  height: MediaQuery.of(context).size.width > 600 ? 120.0 : 80.0,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -80,7 +120,7 @@ class _CheckoutState extends State<Checkout> {
               child: Text(
                 'Final Price: \$${widget.finalPrice.toStringAsFixed(2)}',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
@@ -93,14 +133,14 @@ class _CheckoutState extends State<Checkout> {
             ),
             SizedBox(height: 16.0),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 600 ? 20 : 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Do you have a PROMO CODE  ? ',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -113,6 +153,7 @@ class _CheckoutState extends State<Checkout> {
                           width: double.infinity,
                           height: 40.0,
                           child: TextField(
+                            onChanged: (value) => name = value,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Enter Promo Code for 10% ',
@@ -129,7 +170,7 @@ class _CheckoutState extends State<Checkout> {
                         child: Text(
                           'Apply',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: MediaQuery.of(context).size.width > 600 ? 14.0 : 12.0,
                             color: Colors.white,
                           ),
                         ),
@@ -143,13 +184,15 @@ class _CheckoutState extends State<Checkout> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // ... (unchanged code)
+
                   SizedBox(height: 16.0),
                   Padding(
-                    padding: EdgeInsets.only(left: 16.0),
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width > 600 ? 16.0 : 10.0),
                     child: Text(
                       'Discounted Price: \$${discountedPrice.toStringAsFixed(2)}',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: MediaQuery.of(context).size.width > 600 ? 18 : 14,
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
@@ -159,7 +202,7 @@ class _CheckoutState extends State<Checkout> {
               ),
             SizedBox(height: 16.0),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width > 600 ? 20 : 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -172,13 +215,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'Name: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => name = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Name',
@@ -195,13 +239,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'Email: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => email = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Email',
@@ -222,13 +267,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'Address: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => address = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Address',
@@ -245,13 +291,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'City: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => city = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'City',
@@ -272,13 +319,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'Country: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => country = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Country',
@@ -295,13 +343,14 @@ class _CheckoutState extends State<Checkout> {
                             Text(
                               'Telephone: ',
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width > 600 ? 14 : 12,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 8.0),
                             TextField(
+                              onChanged: (value) => telephone = value,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: 'Telephone',
@@ -311,28 +360,23 @@ class _CheckoutState extends State<Checkout> {
                         ),
                       ),
                     ],
-
                   ),
                   SizedBox(height: 16.0),
-                  Padding(
-                    padding: EdgeInsets.only(top: 0.0, left: 30.0),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 100),
-                        child: ElevatedButton(
-                          onPressed: () => placeOrder(context),
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.black,
-                          ),
-                          child: Text(
-                            'Place Order',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () => placeOrder(context),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      child: Text(
+                        'Place Order',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width > 600 ? 14.0 : 12.0,
+                          color: Colors.white,
                         ),
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
